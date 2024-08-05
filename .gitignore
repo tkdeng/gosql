@@ -1,0 +1,7 @@
+.git
+.svn
+.vscode
+.idea
+db
+*.db
+*.sqlite
