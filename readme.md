@@ -22,10 +22,10 @@ go get github.com/go-sql-driver/mysql
 ```go
 
 import (
-	"github.com/tkdeng/gosql"
+  "github.com/tkdeng/gosql"
 
   // SQLite
-	_ "github.com/mattn/go-sqlite3"
+  _ "github.com/mattn/go-sqlite3"
 
   // MySQL
   _ "github.com/go-sql-driver/mysql"
