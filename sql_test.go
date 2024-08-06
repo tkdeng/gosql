@@ -121,6 +121,8 @@ func TestSaefty(t *testing.T) {
 
 func TestServer(t *testing.T) {
 	//todo: test sql server
+	// https://github.com/go-sql-driver/mysql
+
 	/* db, err := Open("mysql", Server{
 
 	})
