@@ -3,7 +3,7 @@ package gosql
 import (
 	"strconv"
 
-	"github.com/tkdeng/go-sqlorm/common"
+	"github.com/tkdeng/goutil"
 )
 
 type DataType struct {
@@ -17,9 +17,9 @@ func (dataType DataType) Default(value any) *DataType {
 	//todo: add optional sql function methods (with custom struct)
 
 	if dataType.valType == "string" {
-		dataType.def = `'` + sqlEscapeQuote(common.ToType[string](value)) + `'`
+		dataType.def = `'` + sqlEscapeQuote(goutil.ToType[string](value)) + `'`
 	} else {
-		dataType.def = common.ToType[string](value)
+		dataType.def = goutil.ToType[string](value)
 	}
 	return &dataType
 }

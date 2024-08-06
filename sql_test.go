@@ -5,7 +5,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/tkdeng/gosql/common"
+	"github.com/tkdeng/goutil"
 )
 
 func Test(t *testing.T) {
@@ -43,7 +43,7 @@ func Test(t *testing.T) {
 
 		scan(&username, &password)
 
-		if i, err := common.IndexOf(expect, []string{username, password}); err == nil {
+		if i, err := goutil.IndexOf(expect, []string{username, password}); err == nil {
 			expect = append(expect[:i], expect[i+1:]...)
 		} else {
 			t.Error("database does not contain:", "["+username+" "+password+"]")

@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/AspieSoft/go-regex-re2/v2"
-	"github.com/tkdeng/go-sqlorm/common"
+	"github.com/tkdeng/goutil"
 )
 
 type DB struct {
@@ -93,7 +93,7 @@ func (db *DB) Close() {
 func (db *DB) Table(name string, rows ...*DataType) *Query {
 	name = toAlphaNumeric(name)
 
-	if len(rows) != 0 && !common.Contains(db.initTables, name) {
+	if len(rows) != 0 && !goutil.Contains(db.initTables, name) {
 		query := `CREATE TABLE IF NOT EXISTS ` + name + ` (`
 		for i, row := range rows {
 			query += row.key
