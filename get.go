@@ -1,5 +1,9 @@
 package gosql
 
+import (
+	"strings"
+)
+
 // Get will SELECT keys FROM table, and run a loop over the selected rows
 //
 // @cb: will be called for every row
@@ -54,21 +58,21 @@ func (query *Query) Has(values map[string]any) bool {
 
 	valList := []any{}
 
+	q := `SELECT * FROM ` + query.table + ` WHERE `
+	for key, val := range values {
+		q += toAlphaNumeric(key) + ` = ? AND `
+		valList = append(valList, val)
+	}
+	q = q[:len(q)-5]
+
 	if query.where != "" {
-		q := `SELECT * FROM ` + query.table + ` WHERE `
-		for key, val := range values {
-			q += toAlphaNumeric(key) + ` = ? AND `
-			valList = append(valList, val)
-		}
-		q = q[:len(q)-5]
-
-		q += ` ` + query.where
+		q += ` AND` + strings.TrimPrefix(query.where, "WHERE")
 		valList = append(valList, query.whereValue...)
+	}
 
-		if rows, err := query.db.Query(q, valList...); err == nil && rows.Next() {
-			rows.Close()
-			return true
-		}
+	if rows, err := query.db.Query(q, valList...); err == nil && rows.Next() {
+		rows.Close()
+		return true
 	}
 
 	return false

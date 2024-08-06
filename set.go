@@ -123,7 +123,7 @@ func (query *Query) Delete(force ...bool) error {
 		return Error_UnsafeQuery
 	}
 
-	st, err := query.db.SQL.Prepare(`DELETE FROM ` + query.table + ` ` + query.where)
+	st, err := query.db.Prepare(`DELETE FROM ` + query.table + ` ` + query.where)
 	if err != nil {
 		return err
 	}

@@ -13,6 +13,7 @@ type Query struct {
 	order      string
 }
 
+// OrderBy will set ORDER BY key ASC|DESC
 func (query Query) OrderBy(key string, desc ...bool) *Query {
 	if query.order == "" {
 		query.order = "ORDER BY "
@@ -36,13 +37,16 @@ type whereQuery struct {
 	where string
 }
 
-func (query Query) Where(key string, not ...bool) *whereQuery {
+// Where will select WHERE key
+//
+// set @truthy to false, to select WHERE NOT key
+func (query Query) Where(key string, truthy ...bool) *whereQuery {
 	q := `WHERE `
 	if query.where != `` {
 		q = ` AND `
 	}
 
-	if len(not) != 0 && not[0] {
+	if len(truthy) != 0 && !truthy[0] {
 		q += `NOT `
 	}
 	q += toAlphaNumeric(key)
@@ -53,13 +57,16 @@ func (query Query) Where(key string, not ...bool) *whereQuery {
 	}
 }
 
-func (query Query) And(key string, not ...bool) *whereQuery {
+// And will select where ... AND key
+//
+// set @truthy to false, to select where ... AND NOT key
+func (query Query) And(key string, truthy ...bool) *whereQuery {
 	q := ` AND `
 	if query.where == `` {
 		q = `WHERE `
 	}
 
-	if len(not) != 0 && not[0] {
+	if len(truthy) != 0 && !truthy[0] {
 		q += `NOT `
 	}
 	q += toAlphaNumeric(key)
@@ -70,13 +77,16 @@ func (query Query) And(key string, not ...bool) *whereQuery {
 	}
 }
 
-func (query Query) Or(key string, not ...bool) *whereQuery {
+// Or will select where ... OR key
+//
+// set @truthy to false, to select where ... OR NOT key
+func (query Query) Or(key string, truthy ...bool) *whereQuery {
 	q := ` OR `
 	if query.where == `` {
 		q = `WHERE `
 	}
 
-	if len(not) != 0 && not[0] {
+	if len(truthy) != 0 && !truthy[0] {
 		q += `NOT `
 	}
 	q += toAlphaNumeric(key)

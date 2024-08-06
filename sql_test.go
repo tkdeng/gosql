@@ -46,7 +46,7 @@ func Test(t *testing.T) {
 		if i, err := common.IndexOf(expect, []string{username, password}); err == nil {
 			expect = append(expect[:i], expect[i+1:]...)
 		} else {
-			t.Error("database does not contain:", "[" + username + " " + password + "]")
+			t.Error("database does not contain:", "["+username+" "+password+"]")
 		}
 
 		return true
@@ -59,9 +59,17 @@ func Test(t *testing.T) {
 		t.Error("database failed to get:", expect)
 	}
 
-	err = table.Where("password").Equal("p@ssw0rd!").Delete()
+	err = table.Where("password").Equal("p@ssw0rd!").And("username", false).Equal("admin").Delete()
 	if err != nil {
 		t.Error(err)
+	}
+
+	if !table.Has(map[string]any{"username": "admin"}) {
+		t.Error("admin user was removed")
+	}
+
+	if table.Has(map[string]any{"password": "p@ssw0rd!"}) {
+		t.Error("a user still exists with password: 'p@ssw0rd!'")
 	}
 
 	err = table.Drop(true)

@@ -31,6 +31,7 @@ var Error_UnsafeQuery = errors.New("unsafe query")
 
 var querySafetyChecks []func(query string) bool = []func(query string) bool{}
 var querySafetyChecksRE []*regex.Regexp = []*regex.Regexp{}
+var querySafetyChecksWhereRE []*regex.Regexp = []*regex.Regexp{}
 
 // Open opens a new database
 func Open[T interface{ string | Server }](driverName string, dns T) (*DB, error) {
@@ -129,10 +130,12 @@ func (db *DB) Table(name string, rows ...*DataType) *Query {
 //
 // To use this method, you must pass the confirm argument as "I Know What Im Doing!",
 // to confirm that you have read the documentation, and know what you are doing.
-func (db *DB) Unsafe(confirm string) {
+func (db DB) Unsafe(confirm string) *DB {
 	if confirm == "I Know What Im Doing!" {
 		db.unsafe = true
 	}
+
+	return &db
 }
 
 // Query executes a query that returns rows, typically a SELECT.
@@ -192,7 +195,7 @@ func SafeQuery(query string) bool {
 
 	// check for bad where query
 	safe := true
-	regex.Comp(`WHERE (.*)$`).RepFunc([]byte(query), func(data func(int) []byte) []byte {
+	regex.Comp(`WHERE(.*)$`).RepFunc([]byte(query), func(data func(int) []byte) []byte {
 		q := data(1)
 
 		// common sql injection: username = * AND password = *
@@ -208,6 +211,14 @@ func SafeQuery(query string) bool {
 			}
 			return []byte{}
 		}, true)
+
+		// check custom where regex list
+		for _, reg := range querySafetyChecksWhereRE {
+			if reg.Match([]byte(query)) {
+				safe = false
+				break
+			}
+		}
 
 		return []byte{}
 	}, true)
@@ -246,6 +257,12 @@ func AddSafetyCheck(cb func(query string) bool) {
 // which will check for a match, instead of a full callback method.
 //
 // If the query matches this regex, the query will be seen as unsafe.
-func AddSafetyCheckRE(re string) {
-	querySafetyChecksRE = append(querySafetyChecksRE, regex.Comp(re))
+//
+// @where: if true, will only check after the WHERE keyword
+func AddSafetyCheckRE(re string, where ...bool) {
+	if len(where) != 0 && where[0] {
+		querySafetyChecksWhereRE = append(querySafetyChecksWhereRE, regex.Comp(re))
+	} else {
+		querySafetyChecksRE = append(querySafetyChecksRE, regex.Comp(re))
+	}
 }
