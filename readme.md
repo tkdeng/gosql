@@ -73,6 +73,12 @@ func main(){
     "password": "NewPassword!",
   }, "username") // optional: specify unique keys
 
+  // UPDATE row
+  err := table.Where("id").Equal(0).Set(map[string]any{
+    "username": "user",
+    "password": "NewerPassword!",
+  })
+
   // In the above example, if the database finds that
   // "username" = "user" already exists, it will update the
   // "password" of the existing user, instead of creating
@@ -101,12 +107,18 @@ func main(){
 
   // where query
   err := table.Where("password") // WHERE password
-    .Equal("p@ssw0rd!") // = 'insecure password'
+    .Equal("p@ssw0rd!") // = 'p@ssw0rd!' (insecure password)
     .And("username", false) // AND NOT username (note: second are appends NOT if set to false)
     .Equal("admin") // = 'admin'
     .Delete() // delete row from database
-
   
+  // note: the above example will delete any user with the password "p@ssw0rd!"
+
+  // If you plan on removing insucure passworss, I would recommend locking the account
+  // by updating it with a random password, and let the user change it via email or the
+  // 'forgot password' button. Your users will likely be mad if you randomly delete their account.
+
+
   // additional saefty
 
   // running Delete, without a Where query will return an error
