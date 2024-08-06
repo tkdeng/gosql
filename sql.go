@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/AspieSoft/go-regex-re2/v2"
 	"github.com/tkdeng/go-sqlorm/common"
@@ -60,6 +61,14 @@ func Open[T interface{ string | Server }](driverName string, dns T) (*DB, error)
 	db, err := sql.Open(driverName, dbDNS)
 	if err != nil {
 		return nil, err
+	}
+
+	if strings.HasPrefix(dbDNS, "file:") || dbDNS == ":memory:" {
+		db.SetMaxOpenConns(1)
+	} else {
+		db.SetConnMaxLifetime(time.Minute * 3)
+		db.SetMaxOpenConns(10)
+		db.SetMaxIdleConns(10)
 	}
 
 	return &DB{

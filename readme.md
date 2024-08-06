@@ -40,12 +40,12 @@ func main(){
 
   // Server
   db, err := gosql.Open("mysql", gosql.Server{
-    username: "SQLUser",
+    username: "user",
     password: "p@ssw0rd!",
     host: "localhost",
     port: 1433,
     protocol: "tcp", // or udp
-    database: "",
+    database: "db",
   })
 }
 
