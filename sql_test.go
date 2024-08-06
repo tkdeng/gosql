@@ -1,11 +1,11 @@
 package gosql
 
 import (
-	"fmt"
 	"testing"
 
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/tkdeng/gosql/common"
 )
 
 func Test(t *testing.T) {
@@ -32,18 +32,31 @@ func Test(t *testing.T) {
 		t.Error(err)
 	}
 
+	expect := [][]string{
+		{"admin", "12345"},
+		{"user", "p@ssw0rd!"},
+	}
+
 	err = table.Get([]string{"username", "password"}, func(scan func(dest ...any) error) bool {
 		var username string
 		var password string
 
 		scan(&username, &password)
 
-		fmt.Println(username, password)
+		if i, err := common.IndexOf(expect, []string{username, password}); err == nil {
+			expect = append(expect[:i], expect[i+1:]...)
+		} else {
+			t.Error("database does not contain:", "[" + username + " " + password + "]")
+		}
 
 		return true
 	})
 	if err != nil {
 		t.Error(err)
+	}
+
+	if len(expect) != 0 {
+		t.Error("database failed to get:", expect)
 	}
 
 	err = table.Where("password").Equal("p@ssw0rd!").Delete()

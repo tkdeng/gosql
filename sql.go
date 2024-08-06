@@ -71,6 +71,10 @@ func Open[T interface{ string | Server }](driverName string, dns T) (*DB, error)
 		db.SetMaxIdleConns(10)
 	}
 
+	if err := db.Ping(); err != nil {
+		return nil, err
+	}
+
 	return &DB{
 		SQL:        db,
 		initTables: []string{},

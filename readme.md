@@ -47,6 +47,9 @@ func main(){
     protocol: "tcp", // or udp
     database: "db",
   })
+
+  // close database
+  defer db.Close()
 }
 
 ```
