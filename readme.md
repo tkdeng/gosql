@@ -3,6 +3,8 @@
 GoSQL is an SQL ORM for the Go programming language.
 It is intended to add type safety and ease of use to SQL.
 
+[<img src="./assets/icon.png" alt="icon" width="200"/>](./assets/icon.png)
+
 ## Installation
 
 ```shell
