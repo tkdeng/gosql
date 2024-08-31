@@ -8,10 +8,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/AspieSoft/go-regex-re2/v2"
+	"github.com/tkdeng/goregex"
 	"github.com/tkdeng/goutil"
 )
-
 type DB struct {
 	SQL        *sql.DB
 	initTables []string
@@ -210,7 +209,7 @@ func SafeQuery(query string) bool {
 				safe = false
 			}
 			return []byte{}
-		}, true)
+		})
 
 		// check custom where regex list
 		for _, reg := range querySafetyChecksWhereRE {
@@ -221,7 +220,7 @@ func SafeQuery(query string) bool {
 		}
 
 		return []byte{}
-	}, true)
+	})
 	if !safe {
 		return false
 	}
