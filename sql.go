@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/tkdeng/goregex"
+	"github.com/tkdeng/regex"
 	"github.com/tkdeng/goutil"
 )
 type DB struct {
@@ -43,7 +43,7 @@ func Open[T interface{ string | Server }](driverName string, dns T) (*DB, error)
 		if path == "" {
 			dbDNS = "file::memory:?cache=shared"
 		} else {
-			path = string(regex.Comp(`[^\w_\-:\\/@$#!+~\.\,\s ]`).RepStrLit([]byte(path), []byte{}))
+			path = string(regex.Comp(`[^\w_\-:\\/@$#!+~\.\,\s ]`).RepLit([]byte(path), []byte{}))
 			dbDNS = "file:" + path + "?cache=shared"
 		}
 	} else if server, ok := dnsVal.(Server); ok {

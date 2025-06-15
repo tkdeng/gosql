@@ -1,12 +1,12 @@
 package gosql
 
 import (
-	"github.com/tkdeng/goregex"
+	"github.com/tkdeng/regex"
 )
 
 // [^\w_\-]
 func toAlphaNumeric(str string) string {
-	return string(regex.Comp(`[^\w_\-]`).RepStrLit([]byte(str), []byte{}))
+	return string(regex.Comp(`[^\w_\-]`).RepLit([]byte(str), []byte{}))
 }
 
 func sqlEscapeQuote(str string) string {
